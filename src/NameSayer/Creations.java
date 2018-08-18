@@ -1,4 +1,6 @@
+package NameSayer;
 
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,13 @@ public class Creations {
         return creationList;
     }
 
+    public void playSelectedCreation(){
+        NameSayerGUI temp= new NameSayerGUI();
+        String selection;
+        ObservableList<String> tempSelection=temp.getSelectedCreation();
+        selection=tempSelection.get(0);
+        System.out.println(selection);
+    }
 
 
 
