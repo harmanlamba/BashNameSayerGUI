@@ -42,7 +42,7 @@ public class PopUps {
         //Setting up event handlers
         cancelButton.setOnAction(e -> window.close());
         okButton.setOnAction(e-> {
-            if(creationNameField.getText().equals("")||creationNameField.getText()==null){
+            if(creationNameField.getText()==null || creationNameField.getText().equals("")){
                 AlertBox("Invalid Input", "Please enter a valid creation name!",580,50);
             }else{
                 System.out.println(creationNameField.getText());
