@@ -114,7 +114,7 @@ public class Creations {
 
 
 
-    public static void recordingAudio(String creationName){
+    public void recordingAudio(String creationName){
         String recordingCmd="ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" +creationName+".mp3";
         ProcessBuilder recordingAudio= new ProcessBuilder("/bin/bash","-c",recordingCmd);
         try {
@@ -124,7 +124,7 @@ public class Creations {
         }
     }
 
-    public static void combineVideoAndAudio(String creationName, ListView listView){
+    public void combineVideoAndAudio(String creationName, ListView listView){
         String cmd="ffmpeg -i ./tempCreations/"+creationName+".mp4 -i ./tempCreations/"+creationName+".mp3 -c:v copy -c:a aac -strict experimental ./creations/"+ creationName+".mp4 ";
         System.out.println(cmd);
         ProcessBuilder combiningMediaProcess= new ProcessBuilder("/bin/bash","-c",cmd);

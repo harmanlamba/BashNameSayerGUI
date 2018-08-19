@@ -118,7 +118,8 @@ public class PopUps {
         //Event Handling
         cancelButton.setOnAction(e-> window.close());
         okButton.setOnAction(e -> {
-            Creations.recordingAudio(creationName);
+            Creations creation = new Creations();
+            creation.recordingAudio(creationName);
             PauseTransition delay= new PauseTransition(Duration.seconds(5));
             delay.play();
             delay.setOnFinished(event  -> window.close());
@@ -164,7 +165,8 @@ public class PopUps {
 
         //Event Handling
         keepButton.setOnAction(e-> {
-            Creations.combineVideoAndAudio(creationName,listView);
+            Creations creation= new Creations();
+            creation.combineVideoAndAudio(creationName,listView);
             window.close();
         });
 
@@ -241,7 +243,7 @@ public class PopUps {
                 }
             }
             listView.getItems().remove(count);
-            
+
             recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
             confirmRecordingBox(creationName,listView);
             window.close();
