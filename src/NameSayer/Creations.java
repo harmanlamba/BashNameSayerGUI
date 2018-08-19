@@ -1,11 +1,13 @@
 package NameSayer;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +23,12 @@ public class Creations {
         checkCreationsDirectory();
         File currentDirectory= new File("./creations");
         File[] fileList= currentDirectory.listFiles();
-        for(File counter:fileList){
-            String temp=counter.getName();
-            temp=temp.substring(0,temp.lastIndexOf('.'));
-            creationList.add(temp);
+        if(fileList != null){
+            for(File counter:fileList){
+                String temp=counter.getName();
+                temp=temp.substring(0,temp.lastIndexOf('.'));
+                creationList.add(temp);
+            }
         }
         return creationList;
     }
@@ -78,8 +82,9 @@ public class Creations {
         }
     }
 
-    public void createCreation(){
-        String creationName=_popUp.creationBox("Create new Creation", "Please enter the name of the creation without \nthe extension", "Ok", "Cancel");
+    public void createCreation(ListView listView){
+        String[] combinedOutput=_popUp.creationBox("Create new Creation", "Please enter the name of the creation without \nthe extension", "Ok", "Cancel");
+        String creationName= combinedOutput[0];
         checkCreationsDirectory();
         if(!creationNameExist(creationName)){
             ProcessBuilder makeTempCreations= new ProcessBuilder("/bin/bash","-c","mkdir ./tempCreations");
@@ -93,7 +98,7 @@ public class Creations {
                 e.printStackTrace();
             }
             _popUp.recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
-            //confirm recording
+            _popUp.confirmRecordingBox(creationName,listView);
         }else{
             //Implementation for override or cancel the creation
         }
@@ -103,7 +108,7 @@ public class Creations {
     }
 
     public static void recordingAudio(String creationName){
-        String recordingCmd="ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" +creationName+".mkv";
+        String recordingCmd="ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" +creationName+".mp3";
         ProcessBuilder recordingAudio= new ProcessBuilder("/bin/bash","-c",recordingCmd);
         try {
             Process process= recordingAudio.start();
@@ -112,19 +117,26 @@ public class Creations {
         }
     }
 
-
-    public void confirmRecording(){
-
-    }
-
-    public void combineVideoAndAudio(String creationName){
-        String cmd="ffmpeg -i ./tempCreations/"+creationName+".mp4 -i ./tempCreations/"+creationName+".mkv -c:v copy -c:a aac -strict experimental ./creations/"+ creationName+".mp4 ";
+    public static void combineVideoAndAudio(String creationName, ListView listView){
+        String cmd="ffmpeg -i ./tempCreations/"+creationName+".mp4 -i ./tempCreations/"+creationName+".mp3 -c:v copy -c:a aac -strict experimental ./creations/"+ creationName+".mp4 ";
+        System.out.println(cmd);
         ProcessBuilder combiningMediaProcess= new ProcessBuilder("/bin/bash","-c",cmd);
+        ProcessBuilder removeTempCreations= new ProcessBuilder("/bin/bash","-c","rm -r ./tempCreations");
         try {
+            PauseTransition delay= new PauseTransition(Duration.seconds(1));
+            delay.play();
             Process process= combiningMediaProcess.start();
+            delay.setOnFinished(event  -> {
+                try {
+                    Process process1= removeTempCreations.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
+        listView.getItems().add(creationName);
     }
 
 
@@ -148,7 +160,6 @@ public class Creations {
         String selectionPath=getSelectedCreationPath(true);
         String cmd= "rm -r "+ selectionPath;
 
-        /*
         if (selection != null) {
             String[] combinedArray= _popUp.creationBox("Deleting Confirmation", "Are you sure you want to delete the creation? \nPlease enter the name of the creation to continue","Ok","Cancel");
             String textFieldText= combinedArray[0];
@@ -172,6 +183,6 @@ public class Creations {
         }else{
             _popUp.AlertBox("Invalid Selection!", "Please choose a selection from the sidebar",580,50);
         }
-        */
+
     }
 }

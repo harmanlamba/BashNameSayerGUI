@@ -15,9 +15,9 @@ import javafx.stage.Stage;
 public class NameSayerGUI extends Application {
     private boolean gridLines=false;
     private Creations _creationBrain= new Creations();
-    private PopUps _popUp= new PopUps();
     private ObservableList<String> _creationFiles=_creationBrain.listCreations();
     private static ListView<String> _listView;
+    private PopUps _popUp= new PopUps();
 
     public static void main(String[] args){
         launch(args);
@@ -87,7 +87,7 @@ public class NameSayerGUI extends Application {
             _creationBrain.playCreation(mediaView);
         });
         createCreationButton.setOnAction(e -> {
-            _creationBrain.createCreation();
+            _creationBrain.createCreation(_listView);
         });
         button.setOnAction(e -> {
             if(!gridLines){
@@ -98,7 +98,7 @@ public class NameSayerGUI extends Application {
                 gridLines=false;
             }
         });
-        quitButton.setOnAction(e -> _creationBrain.recordingAudio("baboon"));
+        quitButton.setOnAction(e -> _popUp.confirmRecordingBox("testing1",_listView));
         deleteCreationButton.setOnAction(e -> {
             _creationBrain.deleteCreation(_listView);
         });
@@ -106,10 +106,6 @@ public class NameSayerGUI extends Application {
 
     public ObservableList<String> getSelectedCreation() {
         return _listView.getSelectionModel().getSelectedItems();
-    }
-
-    public ListView getListView(){
-        return _listView;
     }
 
 
