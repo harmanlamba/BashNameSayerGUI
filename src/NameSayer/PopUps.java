@@ -1,6 +1,7 @@
 package NameSayer;
 
 import javafx.animation.PauseTransition;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -24,7 +25,7 @@ import java.io.IOException;
 public class PopUps {
 
     public String[] creationBox(String title, String message, String button1, String button2) {
-        final boolean[] isCancel = new boolean[1];
+        final int[] isCancel = new int[1];
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
@@ -50,17 +51,19 @@ public class PopUps {
 
         //Setting up event handlers
         cancelButton.setOnAction(e ->{
+            isCancel[0] =1;
             window.close();
-            isCancel[0] =true;
+
         });
         okButton.setOnAction(e-> {
+            isCancel[0]=0;
             if(creationNameField.getText()==null || creationNameField.getText().equals("")){
                 AlertBox("Invalid Input", "Please enter a valid creation name!",580,50);
             }else{
                 System.out.println(creationNameField.getText());
                 window.close();
             }
-            isCancel[0] =false;
+
         });
 
         Scene scene = new Scene(grid, 580, 130);
@@ -68,7 +71,7 @@ public class PopUps {
         window.showAndWait();
         String[] combinedOutput= new String[2];
         combinedOutput[0]=creationNameField.getText();
-        combinedOutput[1]=String.valueOf(isCancel);
+        combinedOutput[1]=String.valueOf(isCancel[0]);
         return combinedOutput;
 
     }
@@ -187,6 +190,70 @@ public class PopUps {
         Scene scene = new Scene(grid, 480, 120);
         window.setScene(scene);
         window.showAndWait();
+    }
+
+    public void overrideCreationBox(String title, String message, String creationName, int width, int height, ListView listView){
+        Stage window= new Stage();
+        window.initModality((Modality.APPLICATION_MODAL));
+        window.setTitle(title);
+        window.setX(320);
+        window.setY(150);
+
+        VBox layout= new VBox();
+        layout.setAlignment(Pos.CENTER);
+        layout.setSpacing(10);
+        HBox hLayout= new HBox();
+        hLayout.setAlignment(Pos.CENTER);
+        hLayout.setSpacing(10);
+
+        Label messageToDisplay= new Label(message);
+        Button okButton= new Button("Ok");
+        Button cancelButton= new Button("Cancel");
+
+
+        hLayout.getChildren().addAll(okButton,cancelButton);
+        layout.getChildren().addAll(messageToDisplay,hLayout);
+
+
+        //Event Handling
+        okButton.setOnAction(e->{
+            String cmd="rm -r ./creations/" + creationName+".mp4";
+            System.out.println(cmd);
+            String mkDir="mkdir ./tempCreations";
+            String mkMp4="ffmpeg -f lavfi -i color=c=blue:s=600x600:d=5 -vf \"drawtext=fontfile=/usr/share/fonts/truetype/ubuntu/Ubuntu-RI.ttf:fontsize=30: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=" + creationName+"\"" +" ./tempCreations/" +creationName+".mp4";
+            ProcessBuilder builder= new ProcessBuilder("/bin/bash","-c",cmd);
+            ProcessBuilder builder2= new ProcessBuilder("/bin/bash","-c",mkDir);
+            ProcessBuilder builder3= new ProcessBuilder("/bin/bash","-c",mkMp4);
+            try {
+                Process process= builder.start();
+                Process process2= builder2.start();
+                Process process3=builder3.start();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            ObservableList<String> itemsInListView= listView.getItems();
+            int count=0;
+            for (String counter:itemsInListView){
+                if(counter.equals(creationName)){
+                    break;
+                }else{
+                    count++;
+                }
+            }
+            listView.getItems().remove(count);
+            
+            recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
+            confirmRecordingBox(creationName,listView);
+            window.close();
+
+        });
+
+        cancelButton.setOnAction(e->window.close());
+
+        Scene scene= new Scene(layout,width,height);
+        window.setScene(scene);
+        window.showAndWait();
+
     }
 
 

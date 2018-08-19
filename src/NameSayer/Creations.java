@@ -85,8 +85,9 @@ public class Creations {
     public void createCreation(ListView listView){
         String[] combinedOutput=_popUp.creationBox("Create new Creation", "Please enter the name of the creation without \nthe extension", "Ok", "Cancel");
         String creationName= combinedOutput[0];
+        int isCancel= Integer.parseInt(combinedOutput[1]);
         checkCreationsDirectory();
-        if(!creationNameExist(creationName)){
+        if(!creationNameExist(creationName) && isCancel==0){
             ProcessBuilder makeTempCreations= new ProcessBuilder("/bin/bash","-c","mkdir ./tempCreations");
             String makeVideoCmd="ffmpeg -f lavfi -i color=c=blue:s=600x600:d=5 -vf \"drawtext=fontfile=/usr/share/fonts/truetype/ubuntu/Ubuntu-RI.ttf:fontsize=30: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=" + creationName+"\"" +" ./tempCreations/" +creationName+".mp4";
             System.out.println(makeVideoCmd);
@@ -97,15 +98,21 @@ public class Creations {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            _popUp.recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
-            _popUp.confirmRecordingBox(creationName,listView);
+            if(isCancel==0){
+                _popUp.recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
+                _popUp.confirmRecordingBox(creationName,listView);
+            }
+
         }else{
             //Implementation for override or cancel the creation
+            _popUp.overrideCreationBox("Override Existing Creation","Would you like to override the existing creation?",creationName,580,100,listView);
         }
 
 
 
     }
+
+
 
     public static void recordingAudio(String creationName){
         String recordingCmd="ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" +creationName+".mp3";
@@ -163,7 +170,7 @@ public class Creations {
         if (selection != null) {
             String[] combinedArray= _popUp.creationBox("Deleting Confirmation", "Are you sure you want to delete the creation? \nPlease enter the name of the creation to continue","Ok","Cancel");
             String textFieldText= combinedArray[0];
-            boolean isCancel= Boolean.parseBoolean(combinedArray[1]);
+            int isCancel= Integer.parseInt(combinedArray[1]);
             if(selection.equals(textFieldText)){
                 System.out.println("Deleting the file: " + cmd);
                 ProcessBuilder builder= new ProcessBuilder("/bin/bash","-c",cmd);
@@ -175,7 +182,7 @@ public class Creations {
                 int selectedCell= listView.getSelectionModel().getSelectedIndex();
                 listView.getItems().remove(selectedCell);
             }else{
-                if(!isCancel){
+                if(isCancel==0){
                     _popUp.AlertBox("Invalid Input!", "The name did not match the creation, please check again",580,50);
                     deleteCreation(listView);
                 }

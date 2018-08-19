@@ -55,8 +55,6 @@ public class NameSayerGUI extends Application {
         GridPane.setConstraints(quitButton,21,20);
         GridPane.setConstraints(deleteCreationButton,20,3);
 
-
-
         //HBox below ListView
         HBox hboxBelowListCreations= new HBox();
         hboxBelowListCreations.setSpacing(10);
@@ -80,10 +78,13 @@ public class NameSayerGUI extends Application {
             @Override
             public void handle(MouseEvent event) {
                 String selectionPath= _creationBrain.getSelectedCreationPath(false);
-                Media media= new Media(new File(selectionPath).toURI().toString());
-                MediaPlayer mediaPlayer= new MediaPlayer(media);
-                mediaView.setMediaPlayer(mediaPlayer);
-                System.out.println(selectionPath);
+                String selection= _creationBrain.getSelectedCreation();
+                if(selection != null){
+                    Media media= new Media(new File(selectionPath).toURI().toString());
+                    MediaPlayer mediaPlayer= new MediaPlayer(media);
+                    mediaView.setMediaPlayer(mediaPlayer);
+                    System.out.println(selectionPath);
+                }
             }
         });
         GridPane.setConstraints(_listView,0,2);
@@ -114,7 +115,7 @@ public class NameSayerGUI extends Application {
                 gridLines=false;
             }
         });
-        quitButton.setOnAction(e -> _popUp.confirmRecordingBox("testing1",_listView));
+        //quitButton.setOnAction(e -> _popUp.overrideCreationBox("title","asdfasdfasdfasdf","baboons",580,100));
         deleteCreationButton.setOnAction(e -> {
             _creationBrain.deleteCreation(_listView);
         });
