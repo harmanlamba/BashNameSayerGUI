@@ -2,15 +2,21 @@ package NameSayer;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class NameSayerGUI extends Application {
     private boolean gridLines=false;
@@ -50,12 +56,6 @@ public class NameSayerGUI extends Application {
         GridPane.setConstraints(deleteCreationButton,20,3);
 
 
-        //Setting up the ListView for the GUI
-        _listView= new ListView<>(_creationFiles);
-        _listView.autosize();
-        GridPane.setConstraints(_listView,0,2);
-        GridPane.setVgrow(_listView,Priority.ALWAYS);
-
 
         //HBox below ListView
         HBox hboxBelowListCreations= new HBox();
@@ -72,6 +72,22 @@ public class NameSayerGUI extends Application {
         mediaView.setFitWidth(400);
         mediaView.setX(100);
         GridPane.setConstraints(mediaView,20,2);
+
+        //Setting up the ListView for the GUI
+        _listView= new ListView<>(_creationFiles);
+        _listView.autosize();
+        _listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                String selectionPath= _creationBrain.getSelectedCreationPath(false);
+                Media media= new Media(new File(selectionPath).toURI().toString());
+                MediaPlayer mediaPlayer= new MediaPlayer(media);
+                mediaView.setMediaPlayer(mediaPlayer);
+                System.out.println(selectionPath);
+            }
+        });
+        GridPane.setConstraints(_listView,0,2);
+        GridPane.setVgrow(_listView,Priority.ALWAYS);
 
 
         //Adding children to the layout
