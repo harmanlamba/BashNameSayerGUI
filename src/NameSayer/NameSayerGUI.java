@@ -86,7 +86,9 @@ public class NameSayerGUI extends Application {
         playCreationButton.setOnAction(e->{
             _creationBrain.playCreation(mediaView);
         });
-        createCreationButton.setOnAction(e -> _popUp.creationBox("Create Creation","Type in the name of the creation without any extensions:","Ok","Cancel"));
+        createCreationButton.setOnAction(e -> {
+            _creationBrain.createCreation();
+        });
         button.setOnAction(e -> {
             if(!gridLines){
                 mainGrid.setGridLinesVisible(true);
@@ -96,7 +98,7 @@ public class NameSayerGUI extends Application {
                 gridLines=false;
             }
         });
-        quitButton.setOnAction(e -> primaryStage.close());
+        quitButton.setOnAction(e -> _creationBrain.recordingAudio("baboon"));
         deleteCreationButton.setOnAction(e -> {
             _creationBrain.deleteCreation(_listView);
         });

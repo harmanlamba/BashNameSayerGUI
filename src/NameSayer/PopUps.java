@@ -1,5 +1,6 @@
 package NameSayer;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,15 +8,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 
 
 public class PopUps {
 
-    public String[] creationBox(String title, String message, String button1, String button2) {
+    public String creationBox(String title, String message, String button1, String button2) {
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
@@ -40,10 +42,8 @@ public class PopUps {
         grid.getChildren().setAll(messageToDisplay, okButton, cancelButton,creationNameField);
 
         //Setting up event handlers
-        final boolean[] isCancel = new boolean[1];
         cancelButton.setOnAction(e ->{
             window.close();
-            isCancel[0] =true;
         });
         okButton.setOnAction(e-> {
             if(creationNameField.getText()==null || creationNameField.getText().equals("")){
@@ -51,17 +51,17 @@ public class PopUps {
             }else{
                 System.out.println(creationNameField.getText());
                 window.close();
-                isCancel[0] =false;
             }
         });
 
         Scene scene = new Scene(grid, 580, 130);
         window.setScene(scene);
         window.showAndWait();
-        String[] sourceAndText= new String[2];
-        sourceAndText[0]=creationNameField.getText();
-        sourceAndText[1]=String.valueOf(isCancel[0]);
-        return sourceAndText;
+        return creationNameField.getText();
+
+    }
+
+    public void deletionBox(){
 
     }
 
@@ -85,6 +85,43 @@ public class PopUps {
         window.showAndWait();
 
     }
+
+    public void recordingBox(String title, String message, String creationName, int width, int height){
+        Stage window= new Stage();
+        window.initModality((Modality.APPLICATION_MODAL));
+        window.setTitle(title);
+        window.setX(320);
+        window.setY(150);
+
+        VBox layout= new VBox();
+        layout.setAlignment(Pos.CENTER);
+        layout.setSpacing(10);
+        HBox hLayout= new HBox();
+        hLayout.setAlignment(Pos.CENTER);
+        hLayout.setSpacing(10);
+
+        Label messageToDisplay= new Label(message);
+        Button okButton= new Button("Ok");
+        Button cancelButton= new Button("Cancel");
+
+        //Event Handling
+        cancelButton.setOnAction(e-> window.close());
+        okButton.setOnAction(e -> {
+            Creations.recordingAudio(creationName);
+            PauseTransition delay= new PauseTransition(Duration.seconds(5));
+            delay.play();
+            delay.setOnFinished(event  -> window.close());
+        });
+        hLayout.getChildren().addAll(okButton,cancelButton);
+        layout.getChildren().addAll(messageToDisplay,hLayout);
+
+
+        Scene scene= new Scene(layout,width,height);
+        window.setScene(scene);
+        window.showAndWait();
+    }
+
+
 
 
 }
