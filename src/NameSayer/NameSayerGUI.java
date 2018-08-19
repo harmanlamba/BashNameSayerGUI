@@ -4,25 +4,19 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.util.ArrayList;
 
 public class NameSayerGUI extends Application {
     private boolean gridLines=false;
     private Creations _creationBrain= new Creations();
     private PopUps _popUp= new PopUps();
-    private ObservableList<String> creationFiles=_creationBrain.listCreations();
+    private ObservableList<String> _creationFiles=_creationBrain.listCreations();
     private static ListView<String> _listView;
 
     public static void main(String[] args){
@@ -57,14 +51,11 @@ public class NameSayerGUI extends Application {
 
 
         //Setting up the ListView for the GUI
-        _listView= new ListView<>();
+        _listView= new ListView<>(_creationFiles);
         _listView.autosize();
-        for(String counter: creationFiles){
-            _listView.getItems().add(counter);
-        }
         GridPane.setConstraints(_listView,0,2);
         GridPane.setVgrow(_listView,Priority.ALWAYS);
-        
+
 
         //HBox below ListView
         HBox hboxBelowListCreations= new HBox();
@@ -107,7 +98,7 @@ public class NameSayerGUI extends Application {
         });
         quitButton.setOnAction(e -> primaryStage.close());
         deleteCreationButton.setOnAction(e -> {
-            _creationBrain.deleteCreation(_listView);
+            _creationBrain.deleteCreation(_listView,_creationFiles);
         });
     }
 
@@ -118,6 +109,7 @@ public class NameSayerGUI extends Application {
     public ListView getListView(){
         return _listView;
     }
+
 
 }
 

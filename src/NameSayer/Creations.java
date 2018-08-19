@@ -40,6 +40,7 @@ public class Creations {
     }
 
 
+
     public String getSelectedCreation(){
         NameSayerGUI temp= new NameSayerGUI();
         String selection;
@@ -72,7 +73,7 @@ public class Creations {
         }
     }
 
-    public void deleteCreation(ListView listView){
+    public void deleteCreation(ListView listView, ObservableList mainCreationList){
         String selectionPath=getSelectedCreationPath(true);
         String cmd= "rm -r "+ selectionPath;
         System.out.println("Deleting the file: " + cmd);
