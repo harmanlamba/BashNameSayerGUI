@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 public class PopUps {
 
-    public void creationBox(String title, String message, String button1, String button2) {
+    public String[] creationBox(String title, String message, String button1, String button2) {
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
@@ -40,20 +40,28 @@ public class PopUps {
         grid.getChildren().setAll(messageToDisplay, okButton, cancelButton,creationNameField);
 
         //Setting up event handlers
-        cancelButton.setOnAction(e -> window.close());
+        final boolean[] isCancel = new boolean[1];
+        cancelButton.setOnAction(e ->{
+            window.close();
+            isCancel[0] =true;
+        });
         okButton.setOnAction(e-> {
             if(creationNameField.getText()==null || creationNameField.getText().equals("")){
                 AlertBox("Invalid Input", "Please enter a valid creation name!",580,50);
             }else{
                 System.out.println(creationNameField.getText());
                 window.close();
+                isCancel[0] =false;
             }
-
         });
 
         Scene scene = new Scene(grid, 580, 130);
         window.setScene(scene);
         window.showAndWait();
+        String[] sourceAndText= new String[2];
+        sourceAndText[0]=creationNameField.getText();
+        sourceAndText[1]=String.valueOf(isCancel[0]);
+        return sourceAndText;
 
     }
 

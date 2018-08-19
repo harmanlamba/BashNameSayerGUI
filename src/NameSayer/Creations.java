@@ -73,21 +73,33 @@ public class Creations {
         }
     }
 
-    public void deleteCreation(ListView listView, ObservableList mainCreationList){
+    public void deleteCreation(ListView listView){
+        String selection=getSelectedCreation();
         String selectionPath=getSelectedCreationPath(true);
         String cmd= "rm -r "+ selectionPath;
-        System.out.println("Deleting the file: " + cmd);
-        ProcessBuilder builder= new ProcessBuilder("/bin/bash","-c",cmd);
-        try {
-            Process process= builder.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if (selection != null) {
+            String[] combinedArray= _popUp.creationBox("Deleting Confirmation", "Are you sure you want to delete the creation? \nPlease enter the name of the creation to continue","Ok","Cancel");
+            String textFieldText= combinedArray[0];
+            boolean isCancel= Boolean.parseBoolean(combinedArray[1]);
+            if(selection.equals(textFieldText)){
+                System.out.println("Deleting the file: " + cmd);
+                ProcessBuilder builder= new ProcessBuilder("/bin/bash","-c",cmd);
+                try {
+                    Process process= builder.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                int selectedCell= listView.getSelectionModel().getSelectedIndex();
+                listView.getItems().remove(selectedCell);
+            }else{
+                if(!isCancel){
+                    _popUp.AlertBox("Invalid Input!", "The name did not match the creation, please check again",580,50);
+                    deleteCreation(listView);
+                }
+            }
+        }else{
+            _popUp.AlertBox("Invalid Selection!", "Please choose a selection from the sidebar",580,50);
         }
-        int selectedCell= listView.getSelectionModel().getSelectedIndex();
-        listView.getItems().remove(selectedCell);
     }
-
-
-
-
 }

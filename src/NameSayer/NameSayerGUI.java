@@ -98,7 +98,7 @@ public class NameSayerGUI extends Application {
         });
         quitButton.setOnAction(e -> primaryStage.close());
         deleteCreationButton.setOnAction(e -> {
-            _creationBrain.deleteCreation(_listView,_creationFiles);
+            _creationBrain.deleteCreation(_listView);
         });
     }
 
