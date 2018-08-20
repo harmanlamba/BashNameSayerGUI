@@ -4,6 +4,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -12,7 +13,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class Creations {
@@ -117,13 +117,22 @@ public class Creations {
     }
 
     public void recordingAudio(String creationName) {
-        String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".m4a";
-        ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
-        try {
-            Process process = recordingAudio.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Task task= new Task<Void>() {
+            @Override
+            protected Void call() {
+                String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".m4a";
+                ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
+                try {
+                    Process process = recordingAudio.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+        Thread thread= new Thread(task);
+        thread.start();
     }
 
     public void combineVideoAndAudio(String creationName, ListView listView) {

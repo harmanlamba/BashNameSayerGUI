@@ -125,13 +125,11 @@ public class PopUps {
         });
         okButton.setOnAction(e -> {
             isCancel[0] = false;
-            Platform.runLater(() -> {
                 Creations creation = new Creations();
                 creation.recordingAudio(creationName);
                 PauseTransition delay = new PauseTransition(Duration.seconds(5));
                 delay.play();
                 delay.setOnFinished(event -> window.close());
-            });
         });
         hLayout.getChildren().addAll(okButton, cancelButton);
         layout.getChildren().addAll(messageToDisplay, hLayout);
@@ -175,11 +173,11 @@ public class PopUps {
 
         //Event Handling
         keepButton.setOnAction(e -> {
-            Platform.runLater(() -> {
-                Creations creation = new Creations();
-                creation.combineVideoAndAudio(creationName, listView);
-                window.close();
-            });
+                Platform.runLater(()->{
+                    Creations creation = new Creations();
+                    creation.combineVideoAndAudio(creationName, listView);
+                    window.close();
+                });
         });
 
         redoButton.setOnAction(e -> {
@@ -190,9 +188,7 @@ public class PopUps {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            Platform.runLater(() -> {
                 recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
-            });
         });
 
         listenButton.setOnAction(e -> {
@@ -260,13 +256,9 @@ public class PopUps {
                 }
             }
             listView.getItems().remove(count);
-
-            Platform.runLater(() -> {
                 recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
                 confirmRecordingBox(creationName, listView);
                 window.close();
-            });
-
         });
 
         cancelButton.setOnAction(e -> window.close());
