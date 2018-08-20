@@ -22,11 +22,11 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class NameSayerGUI extends Application {
-    private Creations _creationBrain= new Creations();
-    private ObservableList<String> _creationFiles=_creationBrain.listCreations();
+    private Creations _creationBrain = new Creations();
+    private ObservableList<String> _creationFiles = _creationBrain.listCreations();
     private static ListView<String> _listView;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 
@@ -35,85 +35,84 @@ public class NameSayerGUI extends Application {
         primaryStage.setTitle("NameSayer-Harman Lamba");
 
         //Creating the Layout
-        GridPane mainGrid= new GridPane();
-        mainGrid.setPadding(new Insets(10,10,10,10));
+        GridPane mainGrid = new GridPane();
+        mainGrid.setPadding(new Insets(10, 10, 10, 10));
         mainGrid.setVgap(8);
         mainGrid.setHgap(10);
 
 
         //Components
-        Label creationLabel= new Label("  Creations:");
+        Label creationLabel = new Label("  Creations:");
         Button createCreationButton = new Button("Create Creation");
-        Button playCreationButton= new Button("Play Creation");
-        Button quitButton= new Button ("Quit NameSayer");
-        Button deleteCreationButton= new Button("Delete Creation");
+        Button playCreationButton = new Button("Play Creation");
+        Button quitButton = new Button("Quit NameSayer");
+        Button deleteCreationButton = new Button("Delete Creation");
         GridPane.setHalignment(deleteCreationButton, HPos.CENTER);
-        GridPane.setHalignment(quitButton,HPos.RIGHT);
-        Rectangle rect= new Rectangle(400,300);
+        GridPane.setHalignment(quitButton, HPos.RIGHT);
+        Rectangle rect = new Rectangle(400, 300);
         rect.setStroke(Color.BLACK);
 
 
         //GridPane Constrains
-        GridPane.setConstraints(creationLabel,0,1);
-        GridPane.setConstraints(quitButton,20,10);
-        GridPane.setConstraints(deleteCreationButton,20,3);
+        GridPane.setConstraints(creationLabel, 0, 1);
+        GridPane.setConstraints(quitButton, 20, 10);
+        GridPane.setConstraints(deleteCreationButton, 20, 3);
 
 
         //HBox below ListView
-        HBox hboxBelowListCreations= new HBox();
+        HBox hboxBelowListCreations = new HBox();
         hboxBelowListCreations.setSpacing(10);
-        hboxBelowListCreations.getChildren().addAll(createCreationButton,playCreationButton);
-        ColumnConstraints hBoxColConstrains= new ColumnConstraints(240,240,240);
-        mainGrid.getColumnConstraints().add(0,hBoxColConstrains);
-        GridPane.setConstraints(hboxBelowListCreations,0,3);
-        GridPane.setHgrow(hboxBelowListCreations,Priority.ALWAYS);
+        hboxBelowListCreations.getChildren().addAll(createCreationButton, playCreationButton);
+        ColumnConstraints hBoxColConstrains = new ColumnConstraints(240, 240, 240);
+        mainGrid.getColumnConstraints().add(0, hBoxColConstrains);
+        GridPane.setConstraints(hboxBelowListCreations, 0, 3);
+        GridPane.setHgrow(hboxBelowListCreations, Priority.ALWAYS);
 
         //Adding MediaPlayer to the GUI
-        MediaView mediaView= new MediaView();
+        MediaView mediaView = new MediaView();
         mediaView.setFitHeight(300);
         mediaView.setFitWidth(400);
         mediaView.setX(100);
         mediaView.setPreserveRatio(false);
-        GridPane.setConstraints(mediaView,20,2);
-        GridPane.setConstraints(rect,20,2);
+        GridPane.setConstraints(mediaView, 20, 2);
+        GridPane.setConstraints(rect, 20, 2);
 
         //Setting up the ListView for the GUI
-        _listView= new ListView<>(_creationFiles);
+        _listView = new ListView<>(_creationFiles);
         _listView.autosize();
         _listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                String selectionPath= _creationBrain.getSelectedCreationPath(false);
-                String selection= _creationBrain.getSelectedCreation();
-                ObservableList<String> listOfCreations= _listView.getItems();
-                if(selection != null){
+                String selectionPath = _creationBrain.getSelectedCreationPath(false);
+                String selection = _creationBrain.getSelectedCreation();
+                ObservableList<String> listOfCreations = _listView.getItems();
+                if (selection != null) {
                     mainGrid.getChildren().removeAll(rect);
-                    Media media= new Media(new File(selectionPath).toURI().toString());
-                    MediaPlayer mediaPlayer= new MediaPlayer(media);
+                    Media media = new Media(new File(selectionPath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
                     mediaView.setMediaPlayer(mediaPlayer);
                     System.out.println(selectionPath);
-                }else if(listOfCreations.size()==0){
-                    //System.out.println(_listView.getItems());
+                } else if (listOfCreations.size() == 0) {
                     mainGrid.getChildren().removeAll(rect);
                     mainGrid.getChildren().addAll(rect);
                 }
 
             }
         });
-        GridPane.setConstraints(_listView,0,2);
-        GridPane.setVgrow(_listView,Priority.ALWAYS);
+        GridPane.setConstraints(_listView, 0, 2);
+        GridPane.setVgrow(_listView, Priority.ALWAYS);
 
 
         //Adding children to the layout
-        mainGrid.getChildren().addAll(_listView,hboxBelowListCreations,creationLabel,quitButton,mediaView,deleteCreationButton,rect);
+        mainGrid.getChildren().addAll(_listView, hboxBelowListCreations, creationLabel, quitButton, mediaView, deleteCreationButton, rect);
 
         //Creating the scene and assigning it to the stage
-        Scene mainScene= new Scene(mainGrid,870,470);
+        Scene mainScene = new Scene(mainGrid, 870, 470);
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
         //Event Handling
-        playCreationButton.setOnAction(e->{
+        playCreationButton.setOnAction(e -> {
             _creationBrain.playCreation(mediaView);
         });
         createCreationButton.setOnAction(e -> {
