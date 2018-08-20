@@ -1,6 +1,7 @@
 package NameSayer;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -118,11 +119,13 @@ public class PopUps {
         //Event Handling
         cancelButton.setOnAction(e-> window.close());
         okButton.setOnAction(e -> {
-            Creations creation = new Creations();
-            creation.recordingAudio(creationName);
-            PauseTransition delay= new PauseTransition(Duration.seconds(5));
-            delay.play();
-            delay.setOnFinished(event  -> window.close());
+            Platform.runLater(() -> {
+                Creations creation = new Creations();
+                creation.recordingAudio(creationName);
+                PauseTransition delay= new PauseTransition(Duration.seconds(5));
+                delay.play();
+                delay.setOnFinished(event  -> window.close());
+            });
         });
         hLayout.getChildren().addAll(okButton,cancelButton);
         layout.getChildren().addAll(messageToDisplay,hLayout);
@@ -165,28 +168,34 @@ public class PopUps {
 
         //Event Handling
         keepButton.setOnAction(e-> {
-            Creations creation= new Creations();
-            creation.combineVideoAndAudio(creationName,listView);
-            window.close();
+            Platform.runLater(()-> {
+                Creations creation= new Creations();
+                creation.combineVideoAndAudio(creationName,listView);
+                window.close();
+            });
         });
 
         redoButton.setOnAction(e -> {
-            String cmd="rm -r ./tempCreations/"+creationName+".mp3";
+            String cmd="rm -r ./tempCreations/"+"\""+creationName+"\""+".mp3";
             ProcessBuilder remover= new ProcessBuilder("/bin/bash","-c",cmd);
             try {
                 Process process= remover.start();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
-
+            Platform.runLater(() -> {
+                recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
+            });
         });
 
         listenButton.setOnAction(e->{
-            String file= "./tempCreations/"+creationName+".mp3";
-            Media media= new Media(new File(file).toURI().toString());
-            MediaPlayer mediaPlayer= new MediaPlayer(media);
-            mediaPlayer.play();
+            Platform.runLater(()->{
+                String file= "./tempCreations/"+creationName+".mp3";
+                Media media= new Media(new File(file).toURI().toString());
+                MediaPlayer mediaPlayer= new MediaPlayer(media);
+                mediaPlayer.play();
+            });
+
         });
 
         Scene scene = new Scene(grid, 480, 120);
@@ -244,9 +253,11 @@ public class PopUps {
             }
             listView.getItems().remove(count);
 
-            recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
-            confirmRecordingBox(creationName,listView);
-            window.close();
+            Platform.runLater(()->{
+                recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
+                confirmRecordingBox(creationName,listView);
+                window.close();
+            });
 
         });
 

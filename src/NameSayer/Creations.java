@@ -1,6 +1,7 @@
 package NameSayer;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -89,8 +90,8 @@ public class Creations {
         checkCreationsDirectory();
         if(!creationNameExist(creationName) && isCancel==0){
             ProcessBuilder makeTempCreations= new ProcessBuilder("/bin/bash","-c","mkdir ./tempCreations");
-            String makeVideoCmd="ffmpeg -f lavfi -i color=c=blue:s=600x600:d=5 -vf \"drawtext=fontfile=/usr/share/fonts/truetype/ubuntu/Ubuntu-RI.ttf:fontsize=30: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=" + creationName+"\"" +" ./tempCreations/" +creationName+".mp4";
-            System.out.println(makeVideoCmd);
+            String makeVideoCmd="ffmpeg -f lavfi -i color=c=blue:s=600x600:d=5 -vf \"drawtext=fontfile=/usr/share/fonts/truetype/ubuntu/Ubuntu-RI.ttf:fontsize=30: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=" + creationName+"\"" +" ./tempCreations/" +"\""+creationName+"\""+".mp4";
+            System.out.println("Make video command is:"+makeVideoCmd);
             ProcessBuilder makeVideo= new ProcessBuilder("/bin/bash","-c",makeVideoCmd);
             try {
                 Process tempCreationsFolder= makeTempCreations.start();
@@ -99,13 +100,19 @@ public class Creations {
                 e.printStackTrace();
             }
             if(isCancel==0){
-                _popUp.recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
-                _popUp.confirmRecordingBox(creationName,listView);
+                Platform.runLater(()->{
+                    _popUp.recordingBox("Recording","Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n",creationName,580,100);
+                    _popUp.confirmRecordingBox(creationName,listView);
+                });
+
             }
 
         }else{
             //Implementation for override or cancel the creation
-            _popUp.overrideCreationBox("Override Existing Creation","Would you like to override the existing creation?",creationName,580,100,listView);
+            Platform.runLater(()->{
+                _popUp.overrideCreationBox("Override Existing Creation","Would you like to override the existing creation?",creationName,580,100,listView);
+            });
+
         }
 
 
@@ -115,7 +122,7 @@ public class Creations {
 
 
     public void recordingAudio(String creationName){
-        String recordingCmd="ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" +creationName+".mp3";
+        String recordingCmd="ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" +"\""+creationName+"\""+".mp3";
         ProcessBuilder recordingAudio= new ProcessBuilder("/bin/bash","-c",recordingCmd);
         try {
             Process process= recordingAudio.start();
@@ -125,7 +132,7 @@ public class Creations {
     }
 
     public void combineVideoAndAudio(String creationName, ListView listView){
-        String cmd="ffmpeg -i ./tempCreations/"+creationName+".mp4 -i ./tempCreations/"+creationName+".mp3 -c:v copy -c:a aac -strict experimental ./creations/"+ creationName+".mp4 ";
+        String cmd="ffmpeg -i ./tempCreations/"+"\""+creationName+"\""+".mp4 -i ./tempCreations/"+"\""+creationName+"\""+".mp3 -c:v copy -c:a aac -strict experimental ./creations/"+"\""+ creationName+"\""+".mp4 ";
         System.out.println(cmd);
         ProcessBuilder combiningMediaProcess= new ProcessBuilder("/bin/bash","-c",cmd);
         ProcessBuilder removeTempCreations= new ProcessBuilder("/bin/bash","-c","rm -r ./tempCreations");
@@ -156,8 +163,10 @@ public class Creations {
             System.out.println(new File (selectionPath).toURI().toString());
             Media media= new Media(new File (selectionPath).toURI().toString());
             MediaPlayer mediaPlayer= new MediaPlayer(media);
-            mediaView.setMediaPlayer(mediaPlayer);
-            mediaPlayer.play();
+            Platform.runLater(() ->{
+                mediaView.setMediaPlayer(mediaPlayer);
+                mediaPlayer.play();
+            });
             System.out.println("Currently PLaying: "+selectionPath);
         }
     }

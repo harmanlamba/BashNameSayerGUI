@@ -14,16 +14,17 @@ import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
 
 import java.io.File;
 
 public class NameSayerGUI extends Application {
-    private boolean gridLines=false;
     private Creations _creationBrain= new Creations();
     private ObservableList<String> _creationFiles=_creationBrain.listCreations();
     private static ListView<String> _listView;
-    private PopUps _popUp= new PopUps();
 
     public static void main(String[] args){
         launch(args);
@@ -39,21 +40,24 @@ public class NameSayerGUI extends Application {
         mainGrid.setVgap(8);
         mainGrid.setHgap(10);
 
+
         //Components
         Label creationLabel= new Label("  Creations:");
-        Button button= new Button("Display Grid Line");
         Button createCreationButton = new Button("Create Creation");
         Button playCreationButton= new Button("Play Creation");
         Button quitButton= new Button ("Quit NameSayer");
         Button deleteCreationButton= new Button("Delete Creation");
         GridPane.setHalignment(deleteCreationButton, HPos.CENTER);
+        GridPane.setHalignment(quitButton,HPos.RIGHT);
+        Rectangle rect= new Rectangle(400,300);
+        rect.setStroke(Color.BLACK);
 
 
         //GridPane Constrains
         GridPane.setConstraints(creationLabel,0,1);
-        GridPane.setConstraints(button,20,20);
-        GridPane.setConstraints(quitButton,21,20);
+        GridPane.setConstraints(quitButton,20,10);
         GridPane.setConstraints(deleteCreationButton,20,3);
+
 
         //HBox below ListView
         HBox hboxBelowListCreations= new HBox();
@@ -69,7 +73,9 @@ public class NameSayerGUI extends Application {
         mediaView.setFitHeight(300);
         mediaView.setFitWidth(400);
         mediaView.setX(100);
+        mediaView.setPreserveRatio(false);
         GridPane.setConstraints(mediaView,20,2);
+        GridPane.setConstraints(rect,20,2);
 
         //Setting up the ListView for the GUI
         _listView= new ListView<>(_creationFiles);
@@ -79,12 +85,19 @@ public class NameSayerGUI extends Application {
             public void handle(MouseEvent event) {
                 String selectionPath= _creationBrain.getSelectedCreationPath(false);
                 String selection= _creationBrain.getSelectedCreation();
+                ObservableList<String> listOfCreations= _listView.getItems();
                 if(selection != null){
+                    mainGrid.getChildren().removeAll(rect);
                     Media media= new Media(new File(selectionPath).toURI().toString());
                     MediaPlayer mediaPlayer= new MediaPlayer(media);
                     mediaView.setMediaPlayer(mediaPlayer);
                     System.out.println(selectionPath);
+                }else if(listOfCreations.size()==0){
+                    //System.out.println(_listView.getItems());
+                    mainGrid.getChildren().removeAll(rect);
+                    mainGrid.getChildren().addAll(rect);
                 }
+
             }
         });
         GridPane.setConstraints(_listView,0,2);
@@ -92,10 +105,10 @@ public class NameSayerGUI extends Application {
 
 
         //Adding children to the layout
-        mainGrid.getChildren().addAll(button,_listView,hboxBelowListCreations,creationLabel,quitButton,mediaView,deleteCreationButton);
+        mainGrid.getChildren().addAll(_listView,hboxBelowListCreations,creationLabel,quitButton,mediaView,deleteCreationButton,rect);
 
         //Creating the scene and assigning it to the stage
-        Scene mainScene= new Scene(mainGrid,880,500);
+        Scene mainScene= new Scene(mainGrid,870,470);
         primaryStage.setScene(mainScene);
         primaryStage.show();
 
@@ -106,16 +119,7 @@ public class NameSayerGUI extends Application {
         createCreationButton.setOnAction(e -> {
             _creationBrain.createCreation(_listView);
         });
-        button.setOnAction(e -> {
-            if(!gridLines){
-                mainGrid.setGridLinesVisible(true);
-                gridLines=true;
-            }else{
-                mainGrid.setGridLinesVisible(false);
-                gridLines=false;
-            }
-        });
-        //quitButton.setOnAction(e -> _popUp.overrideCreationBox("title","asdfasdfasdfasdf","baboons",580,100));
+        quitButton.setOnAction(e -> primaryStage.close());
         deleteCreationButton.setOnAction(e -> {
             _creationBrain.deleteCreation(_listView);
         });
