@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -126,6 +127,8 @@ public class PopUps {
         okButton.setOnAction(e -> {
             isCancel[0] = false;
             cancelButton.setDisable(true);
+            messageToDisplay.setText("RECORDING");
+            messageToDisplay.setTextFill(Color.RED);
             Creations creation = new Creations();
             creation.recordingAudio(creationName);
             PauseTransition delay = new PauseTransition(Duration.seconds(5));
