@@ -125,11 +125,12 @@ public class PopUps {
         });
         okButton.setOnAction(e -> {
             isCancel[0] = false;
-                Creations creation = new Creations();
-                creation.recordingAudio(creationName);
-                PauseTransition delay = new PauseTransition(Duration.seconds(5));
-                delay.play();
-                delay.setOnFinished(event -> window.close());
+            cancelButton.setDisable(true);
+            Creations creation = new Creations();
+            creation.recordingAudio(creationName);
+            PauseTransition delay = new PauseTransition(Duration.seconds(5));
+            delay.play();
+            delay.setOnFinished(event -> window.close());
         });
         hLayout.getChildren().addAll(okButton, cancelButton);
         layout.getChildren().addAll(messageToDisplay, hLayout);
@@ -162,7 +163,7 @@ public class PopUps {
         Button listenButton = new Button("Listen");
         Button keepButton = new Button("Keep");
         Label messageLabel = new Label("Please Confirm you recording");
-        MediaView mv= new MediaView();
+        MediaView mv = new MediaView();
 
         //Adding components to Layout
         buttonContainer.getChildren().addAll(redoButton, listenButton, keepButton);
@@ -173,11 +174,11 @@ public class PopUps {
 
         //Event Handling
         keepButton.setOnAction(e -> {
-                Platform.runLater(()->{
-                    Creations creation = new Creations();
-                    creation.combineVideoAndAudio(creationName, listView);
-                    window.close();
-                });
+            Platform.runLater(() -> {
+                Creations creation = new Creations();
+                creation.combineVideoAndAudio(creationName, listView);
+                window.close();
+            });
         });
 
         redoButton.setOnAction(e -> {
@@ -188,11 +189,11 @@ public class PopUps {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-                recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
+            recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
         });
 
         listenButton.setOnAction(e -> {
-           Thread thread=new Thread(new Runnable(){
+            Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     String file = "./tempCreations/" + creationName + ".mp3";
@@ -262,9 +263,9 @@ public class PopUps {
                 }
             }
             listView.getItems().remove(count);
-                recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
-                confirmRecordingBox(creationName, listView);
-                window.close();
+            recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
+            confirmRecordingBox(creationName, listView);
+            window.close();
         });
 
         cancelButton.setOnAction(e -> window.close());
