@@ -25,6 +25,7 @@ import java.io.IOException;
 
 
 public class PopUps {
+        private boolean _recordingBoxIsCancel;
 
     public String[] creationBox(String title, String message, String button1, String button2) {
         final int[] isCancel = new int[1];
@@ -120,10 +121,12 @@ public class PopUps {
 
         //Event Handling
         cancelButton.setOnAction(e -> {
+            _recordingBoxIsCancel=true;
             isCancel[0] = true;
             window.close();
         });
         okButton.setOnAction(e -> {
+            _recordingBoxIsCancel=false;
             isCancel[0] = false;
             cancelButton.setDisable(true);
             Creations creation = new Creations();
@@ -182,14 +185,16 @@ public class PopUps {
         });
 
         redoButton.setOnAction(e -> {
-            String cmd = "rm -r ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
-            ProcessBuilder remover = new ProcessBuilder("/bin/bash", "-c", cmd);
-            try {
-                Process process = remover.start();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
             recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
+            if (!_recordingBoxIsCancel){
+                String cmd = "rm -r ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
+                ProcessBuilder remover = new ProcessBuilder("/bin/bash", "-c", cmd);
+                try {
+                    Process process = remover.start();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
         });
 
         listenButton.setOnAction(e -> {
