@@ -120,7 +120,7 @@ public class Creations {
         Task task= new Task<Void>() {
             @Override
             protected Void call() {
-                String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".m4a";
+                String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
                 ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
                 try {
                     Process process = recordingAudio.start();
@@ -136,7 +136,7 @@ public class Creations {
     }
 
     public void combineVideoAndAudio(String creationName, ListView listView) {
-        String cmd = "ffmpeg -i ./tempCreations/" + "\"" + creationName + "\"" + ".mp4 -i ./tempCreations/" + "\"" + creationName + "\"" + ".m4a -c:v copy -c:a aac -strict experimental ./creations/" + "\"" + creationName + "\"" + ".mp4 ";
+        String cmd = "ffmpeg -i ./tempCreations/" + "\"" + creationName + "\"" + ".mp4 -i ./tempCreations/" + "\"" + creationName + "\"" + ".mp3 -c:v copy -c:a aac -strict experimental ./creations/" + "\"" + creationName + "\"" + ".mp4 ";
         System.out.println(cmd);
         ProcessBuilder combiningMediaProcess = new ProcessBuilder("/bin/bash", "-c", cmd);
         ProcessBuilder removeTempCreations = new ProcessBuilder("/bin/bash", "-c", "rm -r ./tempCreations");
@@ -164,17 +164,24 @@ public class Creations {
         if (selection == null || selection.equals("")) {
             _popUp.AlertBox("Invalid Selection", "Please choose a valid selection from the side bar", 580, 50);
         } else {
-            System.out.println(new File(selectionPath).toURI().toString());
-            Media media = new Media(new File(selectionPath).toURI().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            Platform.runLater(() -> {
-                mediaView.setMediaPlayer(mediaPlayer);
-                mediaPlayer.play();
+
+            Thread thread = new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    System.out.println(new File(selectionPath).toURI().toString());
+                    Media media = new Media(new File(selectionPath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    Platform.runLater(() -> {
+                        mediaView.setMediaPlayer(mediaPlayer);
+                        mediaPlayer.play();
+                    });
+                    System.out.println("Currently PLaying: " + selectionPath);
+                }
             });
-            System.out.println("Currently PLaying: " + selectionPath);
+            thread.start();
+
         }
     }
-
     public void deleteCreation(ListView listView) {
         String selection = getSelectedCreation();
         String selectionPath = getSelectedCreationPath(true);

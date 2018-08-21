@@ -181,7 +181,7 @@ public class PopUps {
         });
 
         redoButton.setOnAction(e -> {
-            String cmd = "rm -r ./tempCreations/" + "\"" + creationName + "\"" + ".m4a";
+            String cmd = "rm -r ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
             ProcessBuilder remover = new ProcessBuilder("/bin/bash", "-c", cmd);
             try {
                 Process process = remover.start();
@@ -192,13 +192,19 @@ public class PopUps {
         });
 
         listenButton.setOnAction(e -> {
-            Platform.runLater(() -> {
-                String file = "./tempCreations/" + creationName + ".m4a";
-                Media media = new Media(new File(file).toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                mv.setMediaPlayer(mediaPlayer);
-                mediaPlayer.play();
+           Thread thread=new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    String file = "./tempCreations/" + creationName + ".mp3";
+                    Media media = new Media(new File(file).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    Platform.runLater(() -> {
+                        mv.setMediaPlayer(mediaPlayer);
+                        mediaPlayer.play();
+                    });
+                }
             });
+            thread.start();
 
         });
 
