@@ -25,7 +25,6 @@ import java.io.IOException;
 
 
 public class PopUps {
-        private boolean _recordingBoxIsCancel;
 
     public String[] creationBox(String title, String message, String button1, String button2) {
         final int[] isCancel = new int[1];
@@ -121,12 +120,10 @@ public class PopUps {
 
         //Event Handling
         cancelButton.setOnAction(e -> {
-            _recordingBoxIsCancel=true;
             isCancel[0] = true;
             window.close();
         });
         okButton.setOnAction(e -> {
-            _recordingBoxIsCancel=false;
             isCancel[0] = false;
             cancelButton.setDisable(true);
             Creations creation = new Creations();
@@ -185,16 +182,25 @@ public class PopUps {
         });
 
         redoButton.setOnAction(e -> {
-            recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
-            if (!_recordingBoxIsCancel){
+            boolean[] isCancel=recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName+"temp", 580, 100);
+            if(!isCancel[0]){
+                System.out.println("ok press");
                 String cmd = "rm -r ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
+                String cmd2="mv ./tempCreations/" + "\""+ creationName+"temp"+"\""+".mp3"+" "+"./tempCreations/" + "\""+ creationName+"\""+".mp3";
                 ProcessBuilder remover = new ProcessBuilder("/bin/bash", "-c", cmd);
+                ProcessBuilder renamer = new ProcessBuilder("/bin/bash", "-c", cmd2);
                 try {
                     Process process = remover.start();
+                    Process process2= renamer.start();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+
             }
+
+
+
+
         });
 
         listenButton.setOnAction(e -> {
