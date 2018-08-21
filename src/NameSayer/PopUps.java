@@ -182,23 +182,20 @@ public class PopUps {
         });
 
         redoButton.setOnAction(e -> {
-            boolean[] isCancel=recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName+"temp", 580, 100);
-            if(!isCancel[0]){
-                System.out.println("ok press");
+            boolean[] isCancel = recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName + "temp", 580, 100);
+            if (!isCancel[0]) {
                 String cmd = "rm -r ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
-                String cmd2="mv ./tempCreations/" + "\""+ creationName+"temp"+"\""+".mp3"+" "+"./tempCreations/" + "\""+ creationName+"\""+".mp3";
+                String cmd2 = "mv ./tempCreations/" + "\"" + creationName + "temp" + "\"" + ".mp3" + " " + "./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
                 ProcessBuilder remover = new ProcessBuilder("/bin/bash", "-c", cmd);
                 ProcessBuilder renamer = new ProcessBuilder("/bin/bash", "-c", cmd2);
                 try {
                     Process process = remover.start();
-                    Process process2= renamer.start();
+                    Process process2 = renamer.start();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
 
             }
-
-
 
 
         });
@@ -207,12 +204,22 @@ public class PopUps {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    PauseTransition delay = new PauseTransition(Duration.seconds(5));
                     String file = "./tempCreations/" + creationName + ".mp3";
                     Media media = new Media(new File(file).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
                     Platform.runLater(() -> {
                         mv.setMediaPlayer(mediaPlayer);
                         mediaPlayer.play();
+                    });
+                    delay.play();
+                    listenButton.setDisable(true);
+                    redoButton.setDisable(true);
+                    keepButton.setDisable(true);
+                    delay.setOnFinished(event -> {
+                        listenButton.setDisable(false);
+                        redoButton.setDisable(false);
+                        keepButton.setDisable(false);
                     });
                 }
             });
