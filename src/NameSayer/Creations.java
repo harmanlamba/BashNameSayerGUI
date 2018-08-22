@@ -13,6 +13,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 
 public class Creations {
@@ -212,4 +213,12 @@ public class Creations {
         }
 
     }
+
+    public boolean reggexCheker(String creationName){
+        String pattern="[\\.\\\\!@#$%\\^&\\*\\(\\)\\{\\}\\+\\[\\]\\|]";
+        return Pattern.compile(pattern).matcher(creationName).find();
+    }
+
+
+
 }

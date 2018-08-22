@@ -42,6 +42,7 @@ public class PopUps {
 
         Label messageToDisplay = new Label(message);
         TextField creationNameField = new TextField();
+        creationNameField.setPromptText("Characters Not allowed:!@#$%^&*()+{}[]\\.");
         Button okButton = new Button(button1);
         Button cancelButton = new Button(button2);
         grid.maxHeight(700);
@@ -52,6 +53,9 @@ public class PopUps {
         GridPane.setConstraints(cancelButton, 7, 6);
         grid.getChildren().setAll(messageToDisplay, okButton, cancelButton, creationNameField);
 
+        Creations creation= new Creations();
+
+
         //Setting up event handlers
         cancelButton.setOnAction(e -> {
             isCancel[0] = 1;
@@ -60,7 +64,8 @@ public class PopUps {
         });
         okButton.setOnAction(e -> {
             isCancel[0] = 0;
-            if (creationNameField.getText() == null || creationNameField.getText().equals("")) {
+            boolean validChacters= creation.reggexCheker(creationNameField.getText());
+            if (creationNameField.getText() == null || creationNameField.getText().equals("") || validChacters) {
                 AlertBox("Invalid Input", "Please enter a valid creation name!", 580, 50);
             } else {
                 System.out.println(creationNameField.getText());
@@ -127,6 +132,7 @@ public class PopUps {
         okButton.setOnAction(e -> {
             isCancel[0] = false;
             cancelButton.setDisable(true);
+            okButton.setDisable(true);
             messageToDisplay.setText("RECORDING");
             messageToDisplay.setTextFill(Color.RED);
             Creations creation = new Creations();
