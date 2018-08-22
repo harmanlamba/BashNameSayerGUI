@@ -121,7 +121,7 @@ public class Creations {
         Task task= new Task<Void>() {
             @Override
             protected Void call() {
-                String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".mp3";
+                String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".wav";
                 ProcessBuilder recordingAudio = new ProcessBuilder("/bin/bash", "-c", recordingCmd);
                 try {
                     Process process = recordingAudio.start();
@@ -137,7 +137,7 @@ public class Creations {
     }
 
     public void combineVideoAndAudio(String creationName, ListView listView) {
-        String cmd = "ffmpeg -i ./tempCreations/" + "\"" + creationName + "\"" + ".mp4 -i ./tempCreations/" + "\"" + creationName + "\"" + ".mp3 -c:v copy -c:a aac -strict experimental ./creations/" + "\"" + creationName + "\"" + ".mp4 ";
+        String cmd = "ffmpeg -i ./tempCreations/" + "\"" + creationName + "\"" + ".mp4 -i ./tempCreations/" + "\"" + creationName + "\"" + ".wav -c:v copy -c:a aac -strict experimental ./creations/" + "\"" + creationName + "\"" + ".mp4 ";
         System.out.println(cmd);
         ProcessBuilder combiningMediaProcess = new ProcessBuilder("/bin/bash", "-c", cmd);
         ProcessBuilder removeTempCreations = new ProcessBuilder("/bin/bash", "-c", "rm -r ./tempCreations");
