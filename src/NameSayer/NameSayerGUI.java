@@ -109,7 +109,9 @@ public class NameSayerGUI extends Application {
         //Creating the scene and assigning it to the stage
         Scene mainScene = new Scene(mainGrid, 870, 470);
         primaryStage.setScene(mainScene);
+        primaryStage.setResizable(false);
         primaryStage.show();
+
 
         //Event Handling
         playCreationButton.setOnAction(e -> {

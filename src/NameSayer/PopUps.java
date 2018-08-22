@@ -76,6 +76,7 @@ public class PopUps {
 
         Scene scene = new Scene(grid, 580, 130);
         window.setScene(scene);
+        window.setResizable(false);
         window.showAndWait();
         String[] combinedOutput = new String[2];
         combinedOutput[0] = creationNameField.getText();
@@ -101,6 +102,7 @@ public class PopUps {
 
         Scene scene = new Scene(layout, width, height);
         window.setScene(scene);
+        window.setResizable(false);
         window.showAndWait();
 
     }
@@ -146,6 +148,7 @@ public class PopUps {
 
         Scene scene = new Scene(layout, width, height);
         window.setScene(scene);
+        window.setResizable(false);
         window.showAndWait();
         return isCancel;
     }
@@ -238,6 +241,7 @@ public class PopUps {
 
         Scene scene = new Scene(grid, 480, 120);
         window.setScene(scene);
+        window.setResizable(false);
         window.showAndWait();
     }
 
@@ -299,6 +303,7 @@ public class PopUps {
 
         Scene scene = new Scene(layout, width, height);
         window.setScene(scene);
+        window.setResizable(false);
         window.showAndWait();
 
     }
