@@ -65,8 +65,8 @@ public class PopUps {
         okButton.setOnAction(e -> {
             isCancel[0] = 0;
             boolean validChacters= creation.reggexCheker(creationNameField.getText());
-            if (creationNameField.getText() == null || creationNameField.getText().equals("") || validChacters) {
-                AlertBox("Invalid Input", "Please enter a valid creation name!", 580, 50);
+            if (creationNameField.getText() == null || creationNameField.getText().equals("") || validChacters || creationNameField.getText().length() > 20 || creationNameField.getText().equals(" ")) {
+                AlertBox("Invalid Input", "Please enter a valid creation name:\nWithout special characters, non-empty,not just a space,\nand less than 20 characters long\n", 580, 100);
             } else {
                 System.out.println(creationNameField.getText());
                 window.close();
@@ -94,6 +94,7 @@ public class PopUps {
 
         VBox layout = new VBox();
         layout.setAlignment(Pos.CENTER);
+        layout.setSpacing(5);
         Label messageToDisplay = new Label(message);
         Button okButton = new Button("Ok");
         okButton.setOnAction(e -> window.close());
