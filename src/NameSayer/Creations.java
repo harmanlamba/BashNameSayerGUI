@@ -56,6 +56,23 @@ public class Creations {
     }
 
     /**
+     * This method checks if the tempCreations directory exist, and in the case that it does due to a user error it will
+     * delete the directory before making new creations.
+     */
+    public void checkTempCreationsDir(){
+        File tempDir = new File("./tempCreations");
+        boolean exists = tempDir.exists();
+        if (exists) {
+            ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", "rm -r ./tempCreations");
+            try {
+                Process process = builder.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * This method checks to see if a creation with the current creationName already exist. This is to verify if there
      * is a need to overwrite a creation.
      */
@@ -89,7 +106,6 @@ public class Creations {
     }
 
     /**
-     *
      * This method when given a boolean returns the path of the selected creation by the user in the ListView. The
      * two types of Strings that can be returned are the path with quotes and the path without quotes.
      */
@@ -151,7 +167,7 @@ public class Creations {
      */
     public void recordingAudio(String creationName) {
         //Creation of a new task for multi-threading
-        Task task= new Task<Void>() {
+        Task task = new Task<Void>() {
             @Override
             protected Void call() {
                 String recordingCmd = "ffmpeg -f alsa -ac 2 -i default -t 5  ./tempCreations/" + "\"" + creationName + "\"" + ".wav";
@@ -165,7 +181,7 @@ public class Creations {
             }
         };
         //Recording in the background thread, to ensure concurrency of the GUI.
-        Thread thread= new Thread(task);
+        Thread thread = new Thread(task);
         thread.start();
     }
 
@@ -206,20 +222,22 @@ public class Creations {
         //Get the selection from the user
         String selection = getSelectedCreation();
         String selectionPath = getSelectedCreationPath(false);
-        boolean isInvalidCharacters= reggexCheker(selection);
-        if (selection == null || selection.equals("") || isInvalidCharacters ) {
+        boolean isInvalidCharacters = reggexCheker(selection);
+        if (selection == null || selection.equals("") || isInvalidCharacters) {
             _popUp.AlertBox("Invalid Selection", "Please choose a valid selection from the side bar", 580, 50);
         } else {
             //Creating a seperate thread to ensure concurrency
-            Thread thread = new Thread(new Runnable(){
+            Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Media media = new Media(new File(selectionPath).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
                     //Ensuring that the acutal playing of the creation happens on the GUI
                     Platform.runLater(() -> {
+                        mediaView.getMediaPlayer().stop();
                         mediaView.setMediaPlayer(mediaPlayer);
                         mediaPlayer.play();
+
                     });
                 }
             });
@@ -230,7 +248,7 @@ public class Creations {
 
     /**
      * This method deletes the creation given the listView component. This method is in charge of the physical deletion
-     * in the creaitons folder and the removing of the creation from the listView componenet.
+     * in the creations folder and the removing of the creation from the listView component.
      */
     public void deleteCreation(ListView listView) {
         //Setting up the commands for the process builder
@@ -244,7 +262,7 @@ public class Creations {
             String textFieldText = combinedArray[0];
             int isCancel = Integer.parseInt(combinedArray[1]);
             //Ensuring that the creationName matches the name inputted in the textfield.
-            if (selection.equals(textFieldText)) {
+            if (selection.equals(textFieldText) && isCancel==0) {
                 ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
                 try {
                     //Deleting the creation
@@ -272,11 +290,10 @@ public class Creations {
      * This method uses reggex to check for any invalid characters. NOTE: It is important to know that the method outputs
      * true if the character was found.
      */
-    public boolean reggexCheker(String creationName){
-        String pattern="[\\.\\\\!@#$%\\^&\\*\\(\\)\\{\\}\\+\\[\\]\\|]";
+    public boolean reggexCheker(String creationName) {
+        String pattern = "[\\.\\\\!@#$%\\^&\\*\\(\\)\\{\\}\\+\\[\\]\\|]";
         return Pattern.compile(pattern).matcher(creationName).find();
     }
-
 
 
 }

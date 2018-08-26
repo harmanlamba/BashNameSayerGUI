@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 
 import java.io.File;
+import java.io.IOException;
 
 public class NameSayerGUI extends Application {
     private Creations _creationBrain = new Creations();
@@ -118,6 +119,7 @@ public class NameSayerGUI extends Application {
             _creationBrain.playCreation(mediaView);
         });
         createCreationButton.setOnAction(e -> {
+            _creationBrain.checkTempCreationsDir();
             _creationBrain.createCreation(_listView);
         });
         quitButton.setOnAction(e -> primaryStage.close());
