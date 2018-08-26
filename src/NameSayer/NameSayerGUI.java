@@ -27,6 +27,7 @@ public class NameSayerGUI extends Application {
     private static ListView<String> _listView;
 
     public static void main(String[] args) {
+        //Launching the GUI it self
         launch(args);
     }
 
@@ -41,7 +42,7 @@ public class NameSayerGUI extends Application {
         mainGrid.setHgap(10);
 
 
-        //Components
+        //Creating the base components for the GUI
         Label creationLabel = new Label("  Creations:");
         Button createCreationButton = new Button("Create Creation");
         Button playCreationButton = new Button("Play Creation");
@@ -59,7 +60,7 @@ public class NameSayerGUI extends Application {
         GridPane.setConstraints(deleteCreationButton, 20, 3);
 
 
-        //HBox below ListView
+        //Setting up the HBox below ListView
         HBox hboxBelowListCreations = new HBox();
         hboxBelowListCreations.setSpacing(10);
         hboxBelowListCreations.getChildren().addAll(createCreationButton, playCreationButton);
@@ -91,7 +92,6 @@ public class NameSayerGUI extends Application {
                     Media media = new Media(new File(selectionPath).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
                     mediaView.setMediaPlayer(mediaPlayer);
-                    System.out.println(selectionPath);
                 } else if (listOfCreations.size() == 0) {
                     mainGrid.getChildren().removeAll(rect);
                     mainGrid.getChildren().addAll(rect);
@@ -126,6 +126,7 @@ public class NameSayerGUI extends Application {
         });
     }
 
+    //Getter for the ListView in order to update it, based on new creations and deleting old ones.
     public ObservableList<String> getSelectedCreation() {
         return _listView.getSelectionModel().getSelectedItems();
     }
