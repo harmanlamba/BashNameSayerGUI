@@ -21,7 +21,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -73,8 +72,10 @@ public class PopUps {
         okButton.setOnAction(e -> {
             isCancel[0] = 0;
             boolean isInvalidCharacters = creation.reggexChecker(creationNameField.getText());
-            if (creationNameField.getText() == null || creationNameField.getText().equals("") || isInvalidCharacters || creationNameField.getText().length() > 20 || creationNameField.getText().trim().isEmpty()) {
-                AlertBox("Invalid Input", "Please enter a valid creation name:\nWithout special characters, non-empty,not just a space,\nand less than 20 characters long\n", 580, 100);
+            int fieldLength= creationNameField.getText().length()-1;
+            String fieldInput=creationNameField.getText();
+            if (creationNameField.getText() == null || creationNameField.getText().equals("") || isInvalidCharacters || creationNameField.getText().length() > 20 || creationNameField.getText().trim().isEmpty() || fieldInput.charAt(fieldLength)==' ' || fieldInput.charAt(0)==' ') {
+                AlertBox("Invalid Input", "Please enter a valid creation name:\nWithout special characters, non-empty,not just a space,\nno space at the end of the name and less than 20 characters long\n", 580, 100);
             } else {
                 window.close();
             }
@@ -245,10 +246,7 @@ public class PopUps {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-
             }
-
-
         });
 
         listenButton.setOnAction(e -> {
@@ -344,7 +342,7 @@ public class PopUps {
             }
             //Removing the creation from the ListView
             listView.getItems().remove(count);
-            //Recoring the audio for the creation
+            //Recording the audio for the creation
             recordingBox("Recording", "Clicking ok will start the recording \nafter the recording is finished\nthe window will close by its self\n", creationName, 580, 100);
             //Confirming the recording
             confirmRecordingBox(creationName, listView);
@@ -359,6 +357,4 @@ public class PopUps {
         window.showAndWait();
 
     }
-
-
 }
