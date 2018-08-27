@@ -21,15 +21,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 
 public class PopUps {
 
-    /**
-     * Creating a alertbox for when a new creation has to be made. The alertbox was designed with the idea of reuse,
-     * the the creationBox requires 4 parameters.
+    /*
+     * creationBox() creates an alertbox for when a new creation has to be made. The alertbox was designed with the idea of reuse,
+     * thus the creationBox() requires 4 parameters.
      */
     public String[] creationBox(String title, String message, String button1, String button2) {
         //isCancel is used to know if the cancel button was clicked on
@@ -39,8 +40,8 @@ public class PopUps {
         //Ensuring that other windows canno't but used while this one is still up
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
-        window.setX(320);
-        window.setY(150);
+        //window.setX(320);
+        //window.setY(150);
 
         //Creating and modifying the layout
         GridPane grid = new GridPane();
@@ -72,7 +73,7 @@ public class PopUps {
         });
         okButton.setOnAction(e -> {
             isCancel[0] = 0;
-            boolean isInvalidCharacters = creation.reggexCheker(creationNameField.getText());
+            boolean isInvalidCharacters = creation.reggexChecker(creationNameField.getText());
             if (creationNameField.getText() == null || creationNameField.getText().equals("") || isInvalidCharacters || creationNameField.getText().length() > 20 || creationNameField.getText().trim().isEmpty()) {
                 AlertBox("Invalid Input", "Please enter a valid creation name:\nWithout special characters, non-empty,not just a space,\nand less than 20 characters long\n", 580, 100);
             } else {
@@ -94,17 +95,16 @@ public class PopUps {
 
     }
 
-    /**
-     * This method just creates an alertBox, with a custom title, message, width and height. This method was made
-     * for the multiple times that an alertbox may be needed, thus there are 4 parameters.
+    /*
+     * AlertBox()  creates an alertBox, with a custom title, message, width and height. This method was made
+     * for the multiple times that an alertbox may be needed, thus there are 4 parameters to the method.
      */
     public void AlertBox(String title, String message, int width, int height) {
         //Creating the stage and modifying its settings for the alertBox
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
-        window.setX(320);
-        window.setY(150);
+        window.centerOnScreen();
 
         //Creating the layout for the box
         VBox layout = new VBox();
@@ -124,9 +124,9 @@ public class PopUps {
 
     }
 
-    /**
-     * This method creates the window that records the sound, and calls upon the recordingAudio method to record the audio
-     * in the background.
+    /*
+     * recordingBox() creates the stage that records the sound, and calls upon the recordingAudio method to record the audio
+     * in the background. It returns a boolean array which indicates if the cancel was fired during the execution of the method.
      */
     public boolean[] recordingBox(String title, String message, String creationName, int width, int height) {
         //Creating the boolean array to know if the cancel button was clicked on.
@@ -135,8 +135,7 @@ public class PopUps {
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
-        window.setX(320);
-        window.setY(150);
+        window.centerOnScreen();
 
         //Setting up the layouts and their properties
         VBox layout = new VBox();
@@ -183,8 +182,8 @@ public class PopUps {
         return isCancel;
     }
 
-    /**
-     * This method creates an alert type box which is used to confirm the recording of the user given the creationName
+    /*
+     * confirmRecordingBox() creates an alert type box which is used to confirm the recording of the user given the creationName
      * and the ListView component. It allows the user to keep, the recording, redo the recording, or listen to the
      * recording.
      */
@@ -193,8 +192,7 @@ public class PopUps {
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle("Confirm Recording");
-        window.setX(320);
-        window.setY(150);
+        window.centerOnScreen();
 
         //Creating the layout and making adjustments
         GridPane grid = new GridPane();
@@ -290,8 +288,8 @@ public class PopUps {
         window.showAndWait();
     }
 
-    /**
-     * This method presents a box that verifies if the user wants to overide a creation given the title of the box, the
+    /*
+     * overrideCreationBox() presents a stage that verifies if the user wants to override a creation given the title of the stage, the
      * message to display to the users, the creationName, width, height, and the ListView component.
      */
     public void overrideCreationBox(String title, String message, String creationName, int width, int height, ListView listView) {
@@ -299,8 +297,7 @@ public class PopUps {
         Stage window = new Stage();
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
-        window.setX(320);
-        window.setY(150);
+        window.centerOnScreen();
 
         //Setting up the layout and their respective properties
         VBox layout = new VBox();

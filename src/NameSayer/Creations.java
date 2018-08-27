@@ -6,9 +6,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -20,8 +23,8 @@ public class Creations {
     PopUps _popUp = new PopUps();
 
 
-    /**
-     * This method returns an observable list of all the creations in the "creations" folder.
+    /*
+     * listCreations() returns an observable list of all the creations in the "creations" folder.
      */
     public ObservableList<String> listCreations() {
         ObservableList<String> creationList = FXCollections.observableArrayList();
@@ -38,9 +41,9 @@ public class Creations {
         return creationList;
     }
 
-    /**
-     * This method checks if the "creation" folder exist, and in the case that it doesn't it creates a new folder
-     * using process builder. This method is made to run at startup of the GUI.
+    /*
+     * checkCreationsDirectory() checks if the "creation" folder exist, and in the case that it doesn't it creates a new folder
+     * using process builder.
      */
     public void checkCreationsDirectory() {
         File tempDir = new File("./creations");
@@ -55,11 +58,11 @@ public class Creations {
         }
     }
 
-    /**
-     * This method checks if the tempCreations directory exist, and in the case that it does due to a user error it will
-     * delete the directory before making new creations.
+    /*
+     * checkTempCreationsDir checks if the tempCreations directory exist, and in the case that it does due to a user error it will
+     * delete the directory.
      */
-    public void checkTempCreationsDir(){
+    public void checkTempCreationsDir() {
         File tempDir = new File("./tempCreations");
         boolean exists = tempDir.exists();
         if (exists) {
@@ -72,9 +75,9 @@ public class Creations {
         }
     }
 
-    /**
-     * This method checks to see if a creation with the current creationName already exist. This is to verify if there
-     * is a need to overwrite a creation.
+    /*
+     * creationNameExist() checks to see if a creation with the current creationName already exist. This is to verify if there
+     * is a need to overwrite a creation. The inputs to the method are just the creationName.
      */
     public boolean creationNameExist(String creationName) {
         //Checking to see if creations exist
@@ -94,8 +97,8 @@ public class Creations {
 
     }
 
-    /**
-     * This method gets the selected creation from the User in the ListView.
+    /*
+     * getSelectedCreation gets the selected creation from the User in the ListView.
      */
     public String getSelectedCreation() {
         NameSayerGUI temp = new NameSayerGUI();
@@ -105,8 +108,8 @@ public class Creations {
         return selection;
     }
 
-    /**
-     * This method when given a boolean returns the path of the selected creation by the user in the ListView. The
+    /*
+     * getSelectedCreationPath() when given a boolean returns the path of the selected creation by the user in the ListView. The
      * two types of Strings that can be returned are the path with quotes and the path without quotes.
      */
     public String getSelectedCreationPath(boolean withQuotations) {
@@ -118,8 +121,8 @@ public class Creations {
         }
     }
 
-    /**
-     * This method given the ListView, creates the new creation by the user.
+    /*
+     * createCreation() given the ListView, creates the new creation by the user.
      */
     public void createCreation(ListView listView) {
         //Call to the pop-up to check for existing creation, and to input the name
@@ -160,10 +163,10 @@ public class Creations {
         }
     }
 
-    /**
-     * This method takes in the name of the creation and is used to start the recording of the audio. NOTE: this method,
+    /*
+     * recordingAudio() takes in the name of the creation and is used to start the recording of the audio. NOTE: this method,
      * does not present a pop-up but does the recording in the background. This method has been implemented with threading
-     * in mind.
+     * in mind to ensure concurrency.
      */
     public void recordingAudio(String creationName) {
         //Creation of a new task for multi-threading
@@ -185,8 +188,8 @@ public class Creations {
         thread.start();
     }
 
-    /**
-     * This method give the creationName, and the ListView component is incharge of combining the video and the audio
+    /*
+     * combineVideoAndAudio() given the creationName, and the ListView component is in charge of combining the video and the audio
      * in the tempCreations folder and create the final creation which gets placed in the creations folder.
      */
     public void combineVideoAndAudio(String creationName, ListView listView) {
@@ -215,15 +218,15 @@ public class Creations {
     }
 
 
-    /**
-     * This method given the mediaView component, plays the selected creation in the background thread.
+    /*
+     * playCreation() given the mediaView component, plays the selected creation in the background thread.
      */
     public void playCreation(MediaView mediaView) {
         //Get the selection from the user
         String selection = getSelectedCreation();
         String selectionPath = getSelectedCreationPath(false);
-        boolean isInvalidCharacters = reggexCheker(selection);
-        if (selection == null || selection.equals("") || isInvalidCharacters) {
+
+        if (selection == null || selection.equals("")) {
             _popUp.AlertBox("Invalid Selection", "Please choose a valid selection from the side bar", 580, 50);
         } else {
             //Creating a seperate thread to ensure concurrency
@@ -232,7 +235,7 @@ public class Creations {
                 public void run() {
                     Media media = new Media(new File(selectionPath).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
-                    //Ensuring that the acutal playing of the creation happens on the GUI
+                    //Ensuring that the actual playing of the creation happens on the GUI
                     Platform.runLater(() -> {
                         mediaView.getMediaPlayer().stop();
                         mediaView.setMediaPlayer(mediaPlayer);
@@ -246,11 +249,11 @@ public class Creations {
         }
     }
 
-    /**
-     * This method deletes the creation given the listView component. This method is in charge of the physical deletion
+    /*
+     * deleteCreation() deletes the creation given the listView component. This method is in charge of the physical deletion
      * in the creations folder and the removing of the creation from the listView component.
      */
-    public void deleteCreation(ListView listView) {
+    public void deleteCreation(ListView listView, GridPane mainGrid, Rectangle rect) {
         //Setting up the commands for the process builder
         String selection = getSelectedCreation();
         String selectionPath = getSelectedCreationPath(true);
@@ -262,7 +265,7 @@ public class Creations {
             String textFieldText = combinedArray[0];
             int isCancel = Integer.parseInt(combinedArray[1]);
             //Ensuring that the creationName matches the name inputted in the textfield.
-            if (selection.equals(textFieldText) && isCancel==0) {
+            if (selection.equals(textFieldText) && isCancel == 0) {
                 ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
                 try {
                     //Deleting the creation
@@ -273,11 +276,13 @@ public class Creations {
                 //Updating the ListView component with the deleted creation
                 int selectedCell = listView.getSelectionModel().getSelectedIndex();
                 listView.getItems().remove(selectedCell);
+                mainGrid.getChildren().addAll(rect);
+
             } else {
                 if (isCancel == 0) {
                     //In the case the creationName does not match the inputted name in textfield.
                     _popUp.AlertBox("Invalid Input!", "The name did not match the creation, please check again", 580, 50);
-                    deleteCreation(listView);
+                    deleteCreation(listView, mainGrid,rect);
                 }
             }
         } else {
@@ -287,13 +292,12 @@ public class Creations {
     }
 
     /**
-     * This method uses reggex to check for any invalid characters. NOTE: It is important to know that the method outputs
+     * reggexChecker() uses reggex to check for any invalid characters. NOTE: It is important to know that the method outputs
      * true if the character was found.
      */
-    public boolean reggexCheker(String creationName) {
+    public boolean reggexChecker(String creationName) {
         String pattern = "[\\.\\\\!@#$%\\^&\\*\\(\\)\\{\\}\\+\\[\\]\\|]";
         return Pattern.compile(pattern).matcher(creationName).find();
     }
-
 
 }

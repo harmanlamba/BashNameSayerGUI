@@ -19,8 +19,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
-import java.io.IOException;
 
 public class NameSayerGUI extends Application {
     private Creations _creationBrain = new Creations();
@@ -124,11 +125,11 @@ public class NameSayerGUI extends Application {
         });
         quitButton.setOnAction(e -> primaryStage.close());
         deleteCreationButton.setOnAction(e -> {
-            _creationBrain.deleteCreation(_listView);
+            _creationBrain.deleteCreation(_listView, mainGrid,rect);
         });
     }
 
-    //Getter for the ListView in order to update it, based on new creations and deleting old ones.
+    //A getter to know the selected item. The return type is an ObservableList
     public ObservableList<String> getSelectedCreation() {
         return _listView.getSelectionModel().getSelectedItems();
     }
