@@ -18,9 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
 
 public class NameSayerGUI extends Application {
@@ -91,6 +88,9 @@ public class NameSayerGUI extends Application {
                 ObservableList<String> listOfCreations = _listView.getItems();
                 if (selection != null) {
                     mainGrid.getChildren().removeAll(rect);
+                    if(mediaView.getMediaPlayer() != null){
+                        mediaView.getMediaPlayer().stop();
+                    }
                     Media media = new Media(new File(selectionPath).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
                     mediaView.setMediaPlayer(mediaPlayer);
@@ -125,7 +125,7 @@ public class NameSayerGUI extends Application {
         });
         quitButton.setOnAction(e -> primaryStage.close());
         deleteCreationButton.setOnAction(e -> {
-            _creationBrain.deleteCreation(_listView, mainGrid,rect);
+            _creationBrain.deleteCreation(_listView, mainGrid,rect, mediaView);
         });
     }
 

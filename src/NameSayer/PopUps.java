@@ -37,11 +37,10 @@ public class PopUps {
         final int[] isCancel = new int[1];
         //Creating the GUI for the box
         Stage window = new Stage();
-        //Ensuring that other windows canno't but used while this one is still up
+        //Ensuring that other windows cannot but used while this one is still up
         window.initModality((Modality.APPLICATION_MODAL));
         window.setTitle(title);
-        //window.setX(320);
-        //window.setY(150);
+
 
         //Creating and modifying the layout
         GridPane grid = new GridPane();
@@ -85,6 +84,7 @@ public class PopUps {
         Scene scene = new Scene(grid, 580, 130);
         window.setScene(scene);
         window.setResizable(false);
+        window.centerOnScreen();
         window.showAndWait();
         //Setting up the return array, which returns the boolean if the cancel button was placed and the input to the
         //textfield.

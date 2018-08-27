@@ -252,7 +252,7 @@ public class Creations {
      * deleteCreation() deletes the creation given the listView component. This method is in charge of the physical deletion
      * in the creations folder and the removing of the creation from the listView component.
      */
-    public void deleteCreation(ListView listView, GridPane mainGrid, Rectangle rect) {
+    public void deleteCreation(ListView listView, GridPane mainGrid, Rectangle rect , MediaView mediaView) {
         //Setting up the commands for the process builder
         String selection = getSelectedCreation();
         String selectionPath = getSelectedCreationPath(true);
@@ -265,6 +265,9 @@ public class Creations {
             int isCancel = Integer.parseInt(combinedArray[1]);
             //Ensuring that the creationName matches the name inputted in the textfield.
             if (selection.equals(textFieldText) && isCancel == 0) {
+                if(mediaView.getMediaPlayer() != null){
+                    mediaView.getMediaPlayer().stop();
+                }
                 ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
                 try {
                     //Deleting the creation
@@ -281,7 +284,7 @@ public class Creations {
                 if (isCancel == 0) {
                     //In the case the creationName does not match the inputted name in textfield.
                     _popUp.AlertBox("Invalid Input!", "The name did not match the creation, please check again", 580, 50);
-                    deleteCreation(listView, mainGrid,rect);
+                    deleteCreation(listView, mainGrid,rect,mediaView);
                 }
             }
         } else {
