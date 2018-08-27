@@ -317,9 +317,9 @@ public class PopUps {
         //Event Handling
         okButton.setOnAction(e -> {
             //Setting up the process builder commands
-            String cmd = "rm -r ./creations/" + creationName + ".mp4";
+            String cmd = "rm -r ./creations/" +"\""+creationName+"\"" + ".mp4";
             String mkDir = "mkdir ./tempCreations";
-            String mkMp4 = "ffmpeg -f lavfi -i color=c=blue:s=600x600:d=5 -vf \"drawtext=fontfile=/usr/share/fonts/truetype/ubuntu/Ubuntu-RI.ttf:fontsize=30: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=" + creationName + "\"" + " ./tempCreations/" + creationName + ".mp4";
+            String mkMp4 = "ffmpeg -f lavfi -i color=c=blue:s=600x600:d=5 -vf \"drawtext=fontfile=/usr/share/fonts/truetype/ubuntu/Ubuntu-RI.ttf:fontsize=30: fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=" + creationName + "\"" + " ./tempCreations/" + "\""+ creationName +"\"" + ".mp4";
             //Removing the existing creation, and making the tempDir again with the correct video file
             ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", cmd);
             ProcessBuilder builder2 = new ProcessBuilder("/bin/bash", "-c", mkDir);
