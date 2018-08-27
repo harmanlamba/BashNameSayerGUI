@@ -227,7 +227,7 @@ public class Creations {
         if (selection == null || selection.equals("")) {
             _popUp.AlertBox("Invalid Selection", "Please choose a valid selection from the side bar", 580, 50);
         } else {
-            //Creating a seperate thread to ensure concurrency
+            //Creating a separate thread to ensure concurrency
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
